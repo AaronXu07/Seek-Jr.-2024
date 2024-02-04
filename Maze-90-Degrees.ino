@@ -20,7 +20,7 @@ int in4 = 4;
 
 
 int speed = 200;
-int turnSpeed = 50;
+int turnSpeed = 10;
 int turnCounter = 0;
 bool pastMaze = false;
 
@@ -101,8 +101,6 @@ void stop() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
-  analogWrite(enA, 0);
-  analogWrite(enb, 0);
 }
 
 void loop() {
@@ -117,9 +115,9 @@ void loop() {
   double dist = DIST_SCALE*0.5*(SPEED_OF_SOUND*(pingTime/convert)); // Convert to distance
 
   turnLeft();
-  delay(800);
+  delay(219);
   stop();
-  delay(800);
+  delay(2000);
 
   /*if (dist < 5){
       if (turnCounter%2 == 0){
