@@ -20,7 +20,7 @@ int in4 = 4;
 
 
 int speed = 200;
-int turnSpeed = 100;
+int turnSpeed = 50;
 int turnCounter = 0;
 bool pastMaze = false;
 
@@ -37,10 +37,10 @@ void setup() {
   pinMode(enb, OUTPUT);
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
-  Serial.println("Done setup")
+  Serial.println("Done setup");
 }
 
-void turnRight(){
+void turnLeft(){
   // right backward
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
@@ -51,9 +51,11 @@ void turnRight(){
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
   analogWrite(enb, turnSpeed);
+
+  delay(800); 
 }
 
-void turnLeft(){
+void turnRight(){
   // right forward
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
@@ -65,10 +67,10 @@ void turnLeft(){
   digitalWrite(in4, LOW);
   analogWrite(enb, turnSpeed);
 
-  delay(2000); 
+  delay(800); 
 }
 
-void forward(){
+void forward(int time){
   // right forward
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
@@ -80,6 +82,8 @@ void forward(){
   digitalWrite(in4, HIGH);
   // set speed to 200 out of possible range 0~255
   analogWrite(enb, speed);
+
+  delay(time); 
 }
 
 void backward(){
@@ -94,11 +98,19 @@ void backward(){
   digitalWrite(in4, LOW);
   // set speed to 200 out of possible range 0~255
   analogWrite(enb, speed);
+
+  delay(800); 
 }
 
 void stop() {
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
   analogWrite(enA, 0);
-  analogWrite(enB, 0);
+  analogWrite(enb, 0);
+
+  delay(800); 
 }
 
 void loop() {
@@ -112,26 +124,35 @@ void loop() {
   pingTime = pulseIn(echoPin, HIGH); // Receive the echo from the pulse 
   double dist = DIST_SCALE*0.5*(SPEED_OF_SOUND*(pingTime/convert)); // Convert to distance
 
-  if (!pastMaze){
-    if (dist < 5){
+  /*
+  turnLeft();
+  delay(800);
+  stop();
+  delay(800);
+  */
+
+  if (dist < 0.05){
+      stop(); 
       if (turnCounter%2 == 0){
         turnRight();
+        stop(); 
       }
       else{
         turnLeft();
+        stop(); 
       }
 
       turnCounter += 1;
       if (turnCounter == 4){
         pastMaze = true;
-        forward()
-        delay(3000); 
+        forward(3000);
+      
       }
-    }
-    else{
-      forward();
-    }
+
+  } else{
+    forward(1);
   }
+  
 
   stop(); 
 
